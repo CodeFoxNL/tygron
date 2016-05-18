@@ -20,8 +20,11 @@ import nl.tytech.core.structure.ItemMap;
 import nl.tytech.data.core.item.Item;
 import nl.tytech.data.engine.item.Building;
 import nl.tytech.data.engine.item.Function;
+import nl.tytech.data.engine.item.GlobalIndicator;
+import nl.tytech.data.engine.item.Indicator;
 import nl.tytech.data.engine.item.Setting;
 import nl.tytech.data.engine.item.Stakeholder;
+import nl.tytech.data.engine.item.Zone;
 
 /**
  * Listen to entity events and store them till they are needed. Thread safe
@@ -46,7 +49,7 @@ public class EntityEventHandler implements EventListenerInterface {
 
 	public EntityEventHandler(TygronEntity entity) {
 		this.entity = entity;
-		EventManager.addListener(this, MapLink.STAKEHOLDERS, MapLink.FUNCTIONS, MapLink.BUILDINGS, MapLink.SETTINGS);
+		EventManager.addListener(this, MapLink.STAKEHOLDERS, MapLink.FUNCTIONS, MapLink.BUILDINGS, MapLink.SETTINGS, MapLink.INDICATORS);
 		EventManager.addListener(this, Network.ConnectionEvent.FIRST_UPDATE_FINISHED);
 	}
 
@@ -97,6 +100,9 @@ public class EntityEventHandler implements EventListenerInterface {
 				break;
 			case SETTINGS:
 				createPercepts(event.<ItemMap<Setting>> getContent(MapLink.COMPLETE_COLLECTION), type);
+				break;
+			case INDICATORS:
+				createPercepts(event.<ItemMap<GlobalIndicator>> getContent(MapLink.COMPLETE_COLLECTION), type);
 				break;
 			default:
 				System.out.println("WARNING. EntityEventHandler received unknown event:" + event);

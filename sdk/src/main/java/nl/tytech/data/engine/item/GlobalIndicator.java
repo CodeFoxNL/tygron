@@ -180,7 +180,7 @@ public class GlobalIndicator extends ExcelIndicator {
         return scores.get(neighbourhoodID);
     }
 
-    private Map<Integer, Double> getZoneScores(MapType mapType) {
+    public Map<Integer, Double> getZoneScores(MapType mapType) {
         switch (mapType) {
             case CURRENT:
                 return currentZoneScores;
