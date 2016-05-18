@@ -180,7 +180,7 @@ public class GlobalIndicator extends ExcelIndicator {
         return scores.get(neighbourhoodID);
     }
 
-    public Map<Integer, Double> getZoneScores(MapType mapType) {
+    private Map<Integer, Double> getZoneScores(MapType mapType) {
         switch (mapType) {
             case CURRENT:
                 return currentZoneScores;
@@ -189,7 +189,11 @@ public class GlobalIndicator extends ExcelIndicator {
                 return maquetteZoneScores;
         }
     }
-
+    
+    public Map<Integer, Double> getMaquetteScores() {
+    	return maquetteZoneScores;
+    }
+    
     @Override
     public boolean isDefaultExcel() {
         return !StringUtils.containsData(this.fileName) || "-".equals(this.fileName);

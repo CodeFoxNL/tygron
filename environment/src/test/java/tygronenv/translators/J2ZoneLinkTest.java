@@ -24,7 +24,7 @@ public class J2ZoneLinkTest {
 	public void test() throws TranslationException {
 		translator.translate(globalIndicator);
 		verify(globalIndicator, times(1)).getTarget();
-		verify(globalIndicator, times(2)).getZoneScores(MapType.MAQUETTE);
+		verify(globalIndicator, times(1)).getZoneAmount();
 	}
 
 }

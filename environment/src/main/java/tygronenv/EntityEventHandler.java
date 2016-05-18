@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import eis.eis2java.exception.TranslationException;
 import eis.eis2java.translation.Translator;
 import eis.exceptions.EntityException;
+import eis.iilang.Numeral;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
 import nl.tytech.core.client.event.EventManager;
@@ -49,7 +51,7 @@ public class EntityEventHandler implements EventListenerInterface {
 
 	public EntityEventHandler(TygronEntity entity) {
 		this.entity = entity;
-		EventManager.addListener(this, MapLink.STAKEHOLDERS, MapLink.FUNCTIONS, MapLink.BUILDINGS, MapLink.SETTINGS, MapLink.INDICATORS);
+		EventManager.addListener(this, MapLink.STAKEHOLDERS, MapLink.FUNCTIONS, MapLink.BUILDINGS, MapLink.SETTINGS, MapLink.GLOBALS, MapLink.INDICATORS);
 		EventManager.addListener(this, Network.ConnectionEvent.FIRST_UPDATE_FINISHED);
 	}
 
@@ -102,7 +104,7 @@ public class EntityEventHandler implements EventListenerInterface {
 				createPercepts(event.<ItemMap<Setting>> getContent(MapLink.COMPLETE_COLLECTION), type);
 				break;
 			case INDICATORS:
-				createPercepts(event.<ItemMap<GlobalIndicator>> getContent(MapLink.COMPLETE_COLLECTION), type);
+				createPercepts(event.<ItemMap<GlobalIndicator>> getContent(MapLink.COMPLETE_COLLECTION), "zone_links");
 				break;
 			default:
 				System.out.println("WARNING. EntityEventHandler received unknown event:" + event);
@@ -113,6 +115,21 @@ public class EntityEventHandler implements EventListenerInterface {
 			// entity is ready to run! Report to EIS
 			entity.notifyReady(ENTITY);
 		}
+	}
+
+	private void createPercepts(ItemMap<GlobalIndicator> itemMap, String perceptName) {
+		ArrayList<GlobalIndicator> items = new ArrayList<>(itemMap.values());
+		List<Percept> percepts = new ArrayList<Percept>();
+		Parameter[] parameters = null;
+		try {
+			parameters = translator.translate2Parameter(items);
+		} catch (TranslationException e) {
+			e.printStackTrace();
+		}
+		if(parameters != null){
+			percepts.add(new Percept(perceptName, parameters));
+		}
+		addPercepts(MapLink.INDICATORS, percepts);
 	}
 
 	/**

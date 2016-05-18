@@ -1,11 +1,14 @@
 package tygronenv.translators;
 
+import java.util.Set;
+
 import eis.eis2java.exception.TranslationException;
 import eis.eis2java.translation.Java2Parameter;
 import eis.eis2java.translation.Translator;
 import eis.iilang.Function;
 import eis.iilang.Numeral;
 import eis.iilang.Parameter;
+import eis.iilang.ParameterList;
 import nl.tytech.data.engine.item.GlobalIndicator;
 import nl.tytech.data.engine.serializable.MapType;
 
@@ -21,10 +24,19 @@ public class J2ZoneLink implements Java2Parameter<GlobalIndicator> {
 
 	@Override
 	public Parameter[] translate(GlobalIndicator g) throws TranslationException {
-		return new Parameter[] { new Function("zone_link", new Numeral(g.getID()), translator.translate2Parameter(g.getZoneScores(MapType.MAQUETTE).keySet())[0],
-				translator.translate2Parameter(g.getZoneScores(MapType.MAQUETTE).values())[0], new Numeral(g.getTarget()))};
+		if(g.getZoneAmount()==0){
+			return new Parameter[] {new Function("zone_link", new Numeral(g.getID()), new Numeral(g.getTarget()))};
+		}
+		
+		return new Parameter[] { new Function("zone_link", new Numeral(g.getID()), zones(g.getMaquetteScores().keySet(), g), new Numeral(g.getTarget()))};
 	}
-
+	public ParameterList zones(Set<Integer> zone, GlobalIndicator g) {
+		ParameterList pList = new ParameterList();
+		for(int z: zone){
+			pList.add(new Function("zoneWeights", new Numeral(z), new Numeral(g.getMaquetteScores().get(z))));
+		}
+		return pList;
+	}
 	@Override
 	public Class<? extends GlobalIndicator> translatesFrom() {
 		return GlobalIndicator.class;
