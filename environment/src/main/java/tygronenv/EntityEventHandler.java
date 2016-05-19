@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import eis.eis2java.exception.TranslationException;
 import eis.eis2java.translation.Translator;
 import eis.exceptions.EntityException;
-import eis.iilang.Numeral;
 import eis.iilang.Parameter;
 import eis.iilang.Percept;
 import nl.tytech.core.client.event.EventManager;
@@ -23,10 +21,8 @@ import nl.tytech.data.core.item.Item;
 import nl.tytech.data.engine.item.Building;
 import nl.tytech.data.engine.item.Function;
 import nl.tytech.data.engine.item.GlobalIndicator;
-import nl.tytech.data.engine.item.Indicator;
 import nl.tytech.data.engine.item.Setting;
 import nl.tytech.data.engine.item.Stakeholder;
-import nl.tytech.data.engine.item.Zone;
 
 /**
  * Listen to entity events and store them till they are needed. Thread safe
@@ -51,7 +47,7 @@ public class EntityEventHandler implements EventListenerInterface {
 
 	public EntityEventHandler(TygronEntity entity) {
 		this.entity = entity;
-		EventManager.addListener(this, MapLink.STAKEHOLDERS, MapLink.FUNCTIONS, MapLink.BUILDINGS, MapLink.SETTINGS, MapLink.GLOBALS, MapLink.INDICATORS);
+		EventManager.addListener(this, MapLink.STAKEHOLDERS, MapLink.FUNCTIONS, MapLink.BUILDINGS, MapLink.SETTINGS, MapLink.INDICATORS);
 		EventManager.addListener(this, Network.ConnectionEvent.FIRST_UPDATE_FINISHED);
 	}
 
@@ -104,7 +100,7 @@ public class EntityEventHandler implements EventListenerInterface {
 				createPercepts(event.<ItemMap<Setting>> getContent(MapLink.COMPLETE_COLLECTION), type);
 				break;
 			case INDICATORS:
-				createPercepts(event.<ItemMap<GlobalIndicator>> getContent(MapLink.COMPLETE_COLLECTION), "zone_links");
+				createZonelinkPercepts();
 				break;
 			default:
 				System.out.println("WARNING. EntityEventHandler received unknown event:" + event);
@@ -117,17 +113,24 @@ public class EntityEventHandler implements EventListenerInterface {
 		}
 	}
 
-	private void createPercepts(ItemMap<GlobalIndicator> itemMap, String perceptName) {
-		ArrayList<GlobalIndicator> items = new ArrayList<>(itemMap.values());
+	private <T extends Item> void createZonelinkPercepts() {
+		ItemMap<T> itemMap = EventManager.getItemMap(MapLink.INDICATORS);
+		ArrayList<T> items = new ArrayList<T>(itemMap.values());
+		ArrayList<T> gitems = new ArrayList<T>();
 		List<Percept> percepts = new ArrayList<Percept>();
 		Parameter[] parameters = null;
+		for(Item item: items){
+			if(item.getClass().equals(GlobalIndicator.class)){
+				gitems.add((T) item);
+			}
+		}
 		try {
-			parameters = translator.translate2Parameter(items);
+			parameters = translator.translate2Parameter(gitems);
 		} catch (TranslationException e) {
 			e.printStackTrace();
 		}
-		if(parameters != null){
-			percepts.add(new Percept(perceptName, parameters));
+		if(parameters!=null){
+			percepts.add(new Percept("zone_links", parameters));
 		}
 		addPercepts(MapLink.INDICATORS, percepts);
 	}

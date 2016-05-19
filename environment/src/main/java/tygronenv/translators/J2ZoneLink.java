@@ -10,7 +10,6 @@ import eis.iilang.Numeral;
 import eis.iilang.Parameter;
 import eis.iilang.ParameterList;
 import nl.tytech.data.engine.item.GlobalIndicator;
-import nl.tytech.data.engine.serializable.MapType;
 
 /**
  * Translate {@link GlobalIndicator} into zone_link(zoneID, indID, cur_Val, tar_Val).
