@@ -190,10 +190,6 @@ public class GlobalIndicator extends ExcelIndicator {
         }
     }
     
-    public Map<Integer, Double> getMaquetteScores() {
-    	return maquetteZoneScores;
-    }
-    
     @Override
     public boolean isDefaultExcel() {
         return !StringUtils.containsData(this.fileName) || "-".equals(this.fileName);
