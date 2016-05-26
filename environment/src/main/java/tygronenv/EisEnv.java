@@ -144,7 +144,7 @@ public class EisEnv extends EIDefaultImpl {
 
 			new J2BaseFunction(), new J2Category(), new J2Building(), new J2TimeState(),
 			new J2Indicator(), new J2Zone(), new J2ZoneLink() };
-			
+
 	Parameter2Java<?>[] p2j = new Parameter2Java<?>[] { new ParamEnum2J(), new HashMap2J(), new Stakeholder2J(),
 			new MultiPolygon2J() };
 
