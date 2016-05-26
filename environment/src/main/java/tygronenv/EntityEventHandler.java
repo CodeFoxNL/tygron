@@ -124,14 +124,19 @@ public class EntityEventHandler implements EventListenerInterface {
 		}
 	}
 
+	/**
+	 * Create a ZoneLink percept.
+	 * @param <T>
+	 *     the type of elements in the map.
+	 */
 	private <T extends Item> void createZonelinkPercepts() {
 		ItemMap<T> itemMap = EventManager.getItemMap(MapLink.INDICATORS);
 		ArrayList<T> items = new ArrayList<T>(itemMap.values());
 		ArrayList<T> gitems = new ArrayList<T>();
 		List<Percept> percepts = new ArrayList<Percept>();
 		Parameter[] parameters = null;
-		for(Item item: items){
-			if(item.getClass().equals(GlobalIndicator.class)){
+		for (Item item: items) {
+			if (item.getClass().equals(GlobalIndicator.class)) {
 				gitems.add((T) item);
 			}
 		}
@@ -140,7 +145,7 @@ public class EntityEventHandler implements EventListenerInterface {
 		} catch (TranslationException e) {
 			e.printStackTrace();
 		}
-		if(parameters!=null){
+		if (parameters != null) {
 			percepts.add(new Percept("zone_links", parameters));
 		}
 		addPercepts(MapLink.INDICATORS, percepts);
