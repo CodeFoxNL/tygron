@@ -104,8 +104,7 @@ public class EntityEventHandler implements EventListenerInterface {
 				createPercepts(event.<ItemMap<Setting>> getContent(MapLink.COMPLETE_COLLECTION), type);
 				break;
 			case INDICATORS:
-				createZonelinkPercepts();
-				//Creates the indicator/3 percepts.
+				//Creates the indicator/3 and zone_link/4 percepts.
 				createPercepts(event.<ItemMap<Indicator>> getContent(MapLink.COMPLETE_COLLECTION), type);
 				break;
 			case ZONES:
@@ -122,33 +121,6 @@ public class EntityEventHandler implements EventListenerInterface {
 			// remove stakeholders from the listener, so we don't get new percepts of type stakeholders
 			EventManager.removeListener(this, MapLink.STAKEHOLDERS);
 		}
-	}
-
-	/**
-	 * Create a ZoneLink percept.
-	 * @param <T>
-	 *     the type of elements in the map.
-	 */
-	private <T extends Item> void createZonelinkPercepts() {
-		ItemMap<T> itemMap = EventManager.getItemMap(MapLink.INDICATORS);
-		ArrayList<T> items = new ArrayList<T>(itemMap.values());
-		ArrayList<T> gitems = new ArrayList<T>();
-		List<Percept> percepts = new ArrayList<Percept>();
-		Parameter[] parameters = null;
-		for (Item item: items) {
-			if (item.getClass().equals(GlobalIndicator.class)) {
-				gitems.add((T) item);
-			}
-		}
-		try {
-			parameters = translator.translate2Parameter(gitems);
-		} catch (TranslationException e) {
-			e.printStackTrace();
-		}
-		if (parameters != null) {
-			percepts.add(new Percept("zone_links", parameters));
-		}
-		addPercepts(MapLink.INDICATORS, percepts);
 	}
 
 	/**
