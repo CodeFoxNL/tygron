@@ -20,12 +20,10 @@ import nl.tytech.core.structure.ItemMap;
 import nl.tytech.data.core.item.Item;
 import nl.tytech.data.engine.item.Building;
 import nl.tytech.data.engine.item.Function;
-import nl.tytech.data.engine.item.GlobalIndicator;
 import nl.tytech.data.engine.item.Indicator;
 import nl.tytech.data.engine.item.Setting;
 import nl.tytech.data.engine.item.Stakeholder;
 import nl.tytech.data.engine.item.Zone;
-import tygronenv.translators.J2Building;
 
 /**
  * Listen to entity events and store them till they are needed. Thread safe

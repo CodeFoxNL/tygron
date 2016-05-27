@@ -23,9 +23,9 @@ public class J2GlobalIndicator implements Java2Parameter<GlobalIndicator> {
 	 * translates GlobalIndicator into zone_link(<zoneID>, <tarVal>).
 	 */
 	@Override
-	public Parameter[] translate(GlobalIndicator g) throws TranslationException {
-	  
-		return new Parameter[] {new Function("zone_link", new Numeral(g.getID()), new Numeral(g.getTarget()), new Identifier(g.getExplanation()))};
+	public Parameter[] translate(final GlobalIndicator g) throws TranslationException {
+		return new Parameter[] {new Function("zone_link", new Numeral(g.getID()),
+		    new Numeral(g.getTarget()), new Identifier(g.getExplanation()))};
 	}
 
 	@Override
