@@ -17,17 +17,16 @@ import nl.tytech.data.engine.serializable.MapType;
  */
 public class J2Indicator implements Java2Parameter<Indicator> {
 
+	private double target;
+	private Double currentValue;
     /**
      * Translate the indicator into a parameter.
      */
     @Override
     public Parameter[] translate(final Indicator indicator) throws TranslationException {
         String explanation = indicator.getExplanation();
-        double target = indicator.getTarget();
-        Double currentValue = indicator.getExactNumberValue(MapType.MAQUETTE);
-        if (currentValue == null) {
-            currentValue = 0.0;
-        }
+        setValues(indicator.getTarget(), indicator.getExactNumberValue(MapType.MAQUETTE));
+
         ParameterList pl = new ParameterList();
 
         if (explanation.contains("<p hidden>")) {
@@ -36,17 +35,15 @@ public class J2Indicator implements Java2Parameter<Indicator> {
 
             // If the indicator is an indicator with zones, we add multi
             if (explanation.contains("multiN")) {
-                currentValue = Double.parseDouble(explanation.split("multiN")[0]);
+            	setValues(target, Double.parseDouble(explanation.split("multiN")[0]));
                 pl = zoneLink(indicator, target, explanation.split("multiN")[1]);
             } else if (explanation.contains("multiT")) {
                 String[] targetValues = explanation.split("multiT")[0].split("\\\\t");
-                currentValue = Double.parseDouble(targetValues[0]);
-                target = Double.parseDouble(targetValues[1]);
+                setValues(Double.parseDouble(targetValues[1]), Double.parseDouble(targetValues[0]));
                 pl = zoneLink(indicator, target, explanation.split("multiT")[1]);
             } else if (explanation.contains("single")) {
                 String[] targetValues = explanation.split("single")[0].split("\\\\t");
-                currentValue = Double.parseDouble(targetValues[0]);
-                target = Double.parseDouble(targetValues[1]);
+                setValues(Double.parseDouble(targetValues[1]), Double.parseDouble(targetValues[0]));
             }
         }
 
@@ -57,14 +54,28 @@ public class J2Indicator implements Java2Parameter<Indicator> {
     }
 
     /**
+     * Sets the target and current values.
+     *
+     * @param targetv New target value.
+     * @param currentValuev New current value.
+     */
+    private void setValues(final double targetv, final Double currentValuev) {
+    	if (currentValue == null) {
+            currentValue = 0.0;
+        }
+    	this.target = targetv;
+    	this.currentValue = currentValuev;
+    }
+
+    /**
      * Translates a list of items into a ParameterList of zonelinks.
      *
      * @param i        The indicator.
-     * @param target   The target of the indicator.
+     * @param targetv   The target of the indicator.
      * @param itemList The list of items to parse.
      * @return ParameterList of zoneLinks
      */
-    public ParameterList zoneLink(final Indicator i, final double target, final String itemList) {
+    public ParameterList zoneLink(final Indicator i, final double targetv, final String itemList) {
         ParameterList pList = new ParameterList();
         final int three = 3;
 
@@ -79,7 +90,7 @@ public class J2Indicator implements Java2Parameter<Indicator> {
                 // Length 2 if there is no custom target for each zone
                 pList.add(new Function("zone_link", new Numeral(Integer.parseInt(types[0])),
                         new Numeral(i.getID()), new Numeral(Double.parseDouble(types[1].replaceAll("[^0-9.,-]", ""))),
-                        new Numeral(target)));
+                        new Numeral(targetv)));
             } else if (types.length == three) {
                 // Length 3 if there are custom targets for each zone
                 pList.add(new Function("zone_link", new Numeral(Integer.parseInt(types[0])),
