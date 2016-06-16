@@ -7,6 +7,11 @@ import eis.eis2java.exception.TranslationException;
 import eis.eis2java.translation.Translator;
 import eis.iilang.Function;
 import eis.iilang.Parameter;
+import nl.tytech.core.client.event.EventManager;
+import nl.tytech.core.net.serializable.MapLink;
+import nl.tytech.core.structure.ClientItemMap;
+import nl.tytech.core.structure.ItemMap;
+import nl.tytech.data.core.item.Item;
 import nl.tytech.data.engine.item.Building;
 import nl.tytech.data.engine.serializable.Category;
 import org.junit.Test;
@@ -29,7 +34,7 @@ import static org.mockito.Mockito.verify;
  * Created by Stefan Breetveld on 23-5-2016. In package tygronenv.translators.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(Building.class)
+@PrepareForTest({Building.class, EventManager.class})
 public class ContextJ2BuildingsTest {
 
 	private Translator translator = Translator.getInstance();
@@ -49,6 +54,9 @@ public class ContextJ2BuildingsTest {
 
 		Building building = PowerMockito.mock(Building.class);
 
+		ItemMap<Item> zones = new ClientItemMap<Item>();
+		PowerMockito.mockStatic(EventManager.class);
+		PowerMockito.when(EventManager.getItemMap(MapLink.ZONES)).thenReturn(zones);
 		PowerMockito.when(building.getMultiPolygon(any())).thenReturn(mp);
 		PowerMockito.when(building.getCategories()).thenReturn(categories);
 
